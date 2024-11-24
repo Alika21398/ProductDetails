@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import Home from './pages/Home.jsx'
+import Details from './pages/Details.jsx'
 
 
 const router = createBrowserRouter([
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
         index: true,
       element: <Home/>
 
+      },
+      {
+        path: "details/:id",
+        element: <Details/>
       }
       
     ]
