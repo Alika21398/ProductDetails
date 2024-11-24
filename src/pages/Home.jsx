@@ -3,14 +3,15 @@ import { useApi } from "../App";
 import { Link, useParams } from "react-router-dom";
 import leftarrow from "../assets/leftarrow.svg";
 import rightarrow from "../assets/rightarrow.svg";
+import doublerightarrow from "../assets/doublelrightarrow.svg";
+import doubleleftarrow from "../assets/doubleleftarrow.svg";
 
 const Home = () => {
-  const { id } = useParams();
   const data = useApi();
-  const [selectedRange, setSelectedRange] = useState(50);
-  const [selectedData, setSelectedData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageInput, setPageInput] = useState("");
+  const [selectedRange, setSelectedRange] = useState(20); //to handle how many to display per page
+  const [selectedData, setSelectedData] = useState([]); //to store array of data that will be displayed
+  const [currentPage, setCurrentPage] = useState(1); //stores current page number
+  const [pageInput, setPageInput] = useState(""); //stores page number that users enter on input
 
   //  to display data
   useEffect(() => {
@@ -27,7 +28,7 @@ const Home = () => {
   const handleRangeDropdown = () => {
     const option = [];
     const maxItem = data.length;
-    for (let i = 50; i <= maxItem; i += 50) {
+    for (let i = 20; i <= maxItem; i += 20) {
       option.push(i);
     }
     console.log("option", option);
@@ -91,26 +92,29 @@ const Home = () => {
   console.log("selectedRange", selectedRange);
   console.log("selectedData", selectedData);
   console.log("pages", pages);
-  console.log("id", id);
 
   return (
     <>
       <h1 className="px-11 lg:px-44 text-2xl lg:text-5xl font-bold text-center py-5 md:py-10">
         Explore the Ideas
       </h1>
-      <div className="px-11 lg:px-44 text-center">
+      <div className="px-11 lg:px-44 text-center mb-3">
         <p>
           Click on any image to explore more and get to know about the product.
         </p>
       </div>
 
       {/* dropdown and pagination  */}
-      <div className="px-11 lg:px-44 flex justify-between gap-40 items-center border">
+      <div className=" mx-11 lg:mx-44 py-3 flex justify-between gap-40 items-center border-y border-black">
         {/* dropdown */}
-        <div className="flex gap-5 items-center border">
+        <div className="flex gap-5 items-center ">
           <div>Select required data</div>
 
-          <select onChange={handleRangeChange} value={selectedRange}>
+          <select
+            className="border border-black"
+            onChange={handleRangeChange}
+            value={selectedRange}
+          >
             {handleRangeDropdown().map((option) => {
               return (
                 <option key={option} value={option}>
@@ -121,45 +125,61 @@ const Home = () => {
           </select>
         </div>
 
-        {/* pagination */}
-        {/* <div className="flex flex-wrap gap-5 border">{pages.map((items)=>{return(
-            <div key={items.id}> {items}</div>
-        )})}</div> */}
+        {/* arrows and pagination for current page */}
+        <div className="flex gap-10 ">
+          <div className="flex">
+            <button className="w-[25px]" onClick={goToFirstPage}>
+              <img src={doubleleftarrow} alt="" />
+            </button>
+            <button
+              className="w-[25px]"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage == 1}
+            >
+              <img src={leftarrow} alt="" />
+            </button>
+            {currentPage}
+            <button
+              className="w-[25px]"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage == totalPages}
+            >
+              <img src={rightarrow} alt="" />
+            </button>
+            <button className="w-[25px]" onClick={goToLastPage}>
+              <img src={doublerightarrow} alt="" />
+            </button>
 
-        <div className="flex">
-          <button onClick={goToFirstPage}>f</button>
-          <button
-            className="w-[25px]"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage == 1}
-          >
-            <img src={leftarrow} alt="" />
-          </button>
-          {currentPage}
-          <button
-            className="w-[25px]"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage == totalPages}
-          >
-            <img src={rightarrow} alt="" />
-          </button>
-          <button onClick={goToLastPage}>f</button>
+            {/* shows total datas and currents datas */}
+          </div>
           <div>
-            {currentPage} of {totalPages}
+            {(currentPage - 1) * selectedRange + 1} -{" "}
+            {currentPage * selectedRange} of {data.length}
           </div>
         </div>
-        <div>
-          <input
-            type="text"
-            value={pageInput}
-            onChange={(e) => setPageInput(e.target.value)}
-            onKeyDown={(e) => e.key == "Enter" && goToPage()}
-            placeholder="enter page"
-          />
-          <button onClick={goToPage}>search</button>
-        </div>
       </div>
-      <div className="flex justify-between gap-7 px-11 lg:px-44 flex-wrap my-10">
+
+      {/* for page number input */}
+
+      <div className="px-11 lg:px-44 flex justify-end gap-3 mt-3">
+        <input
+          className="border-black border pl-3"
+          type="text"
+          value={pageInput}
+          onChange={(e) => setPageInput(e.target.value)}
+          onKeyDown={(e) => e.key == "Enter" && goToPage()}
+          placeholder="enter page number"
+        />
+        <button
+          className="px-4 py-2 rounded-lg bg-slate-500 text-white"
+          onClick={goToPage}
+        >
+          search
+        </button>
+      </div>
+
+      {/* displaying data */}
+      <div className="flex justify-between gap-7 px-11 lg:px-44 flex-wrap my-10 overflow-auto h-[1000px]">
         {selectedData.map((items) => {
           return (
             <div key={items.id} className="w-full md:w-[40%] lg:w-[20%] ">
