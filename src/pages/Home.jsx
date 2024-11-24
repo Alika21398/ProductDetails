@@ -47,12 +47,6 @@ const Home = () => {
     console.log("rangeValue", rangeValue);
   };
 
-  //   showing the pagination for how many pages
-  const pages = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push(i);
-  }
-
   // for displaying data when page is change
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -91,7 +85,6 @@ const Home = () => {
   console.log("totalPages", totalPages);
   console.log("selectedRange", selectedRange);
   console.log("selectedData", selectedData);
-  console.log("pages", pages);
 
   return (
     <>
